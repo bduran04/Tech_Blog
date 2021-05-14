@@ -1,25 +1,62 @@
 const router = require('express').Router();
 const { Post, User, Comment } = require('../models');
-const withAuth = require('../utils/auth');
 
-//find all of the data and post on the homepage without auth
+//get all posts for the homepage 
 router.get('/', async (req, res) => {
+try {
+    const postData = await Post.findAll({
+        include: [User],
+    });
 
+    const posts = postData.map((post) => 
+
+    post.get({ plain: true}));
+    res.render('all_posts', { posts });
+    } catch(err) {
+        res.status(500).json(err);
+    }
 });
 
-//render the page once logged in
-router.get('/login', async (req, res) => {
- 
-});
-
-//render signup page
-router.get('/signup', async (req, res) => {
-
-});
-
-//finds one post, but doesnt allow the user to edit 
+//get a single post
 router.get('/post/:id', async (req, res) => {
- 
+ try {
+     const postData = await Post.findByPk(req.params.id, {
+         include: [
+             User,
+             {
+                 model: Comment,
+                 include: [User],
+             },
+         ],
+     });
+     if (postData) {
+         const post = postData.get({ plain: true});
+
+         res.render('single_post', { post });
+     } else {
+         res.status(404).end();
+     }
+ } catch (err) {
+     res.status(500).json(err);
+ }
+});
+
+router.get('/login', (req, res) => {
+if(req.session.loggedIn) {
+    res.redirect('/');
+    return
+}
+
+res.render('login');
+});
+
+router.get('/signup', (req, res) => {
+    if(req.session.loggedIn) {
+        res.redirect('/');
+        return
+    }
+    
+    res.render('signup');
 });
 
 module.exports = router;
