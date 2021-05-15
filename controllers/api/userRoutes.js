@@ -26,11 +26,18 @@ router.get('/:id', async (req, res) => {
             include: [
                 {
                     model: Post,
-                    attributes: ['id', 'title', 'post_content', 'created_at']
+                    attributes: [
+                        'id',
+                        'title',
+                        'post_content',
+                        'created_at']
                 },
                 {
                     model: Comment,
-                    attributes: ['id', 'comment_text', 'created_at'],
+                    attributes: [
+                        'id',
+                        'comment_text',
+                        'created_at'],
                     include: {
                         model: Post,
                         attributes: ['title']
@@ -51,11 +58,14 @@ router.post('/', async (req, res) => {
     try {
         const userData = await User.create({
             email: req.body.email,
+            username: req.body.username,
             password: req.body.password
         });
 
         req.session.save(() => {
             req.session.user_id = userData.id;
+            req.session.username = userData.username;
+            req.session.email = userData.email;
             req.session.logged_in = true;
 
             res.status(200).json(userData);
@@ -68,10 +78,11 @@ router.post('/', async (req, res) => {
 //finds the user based on email, compares the data saved, and logs in if it matches the specific user
 router.post('/login', async (req, res) => {
     try {
-        const userData = await User.findOne({ 
-            where: { 
-                email: req.body.email 
-            } });
+        const userData = await User.findOne({
+            where: {
+                email: req.body.email
+            }
+        });
 
         if (!userData) {
             res
@@ -91,6 +102,8 @@ router.post('/login', async (req, res) => {
 
         req.session.save(() => {
             req.session.user_id = userData.id;
+            req.session.username = userData.username;
+            req.session.email = userData.email;
             req.session.logged_in = true;
 
             res.json({ user: userData, message: 'You are now logged in!' });
@@ -116,16 +129,16 @@ router.post('/logout', (req, res) => {
 router.put('/:id', withAuth, async (req, res) => {
     try {
         const userData = await User.update(req.body, {
-           individualHooks: true,
-           where: {
-               id: req.params.id
-           }
+            individualHooks: true,
+            where: {
+                id: req.params.id
+            }
         })
 
         if (!userData[0]) {
             res
                 .status(404)
-                .json({ message: 'No user found with this id' });
+                .json({ message: 'No user found using this id' });
             return;
         }
 
@@ -139,15 +152,15 @@ router.put('/:id', withAuth, async (req, res) => {
 router.delete('/:id', withAuth, async (req, res) => {
     try {
         const userData = await User.destroy({
-           where: {
-               id: req.params.id
-           }
+            where: {
+                id: req.params.id
+            }
         })
 
         if (!userData[0]) {
             res
                 .status(404)
-                .json({ message: 'No user found with this id' });
+                .json({ message: 'No user found using this id' });
             return;
         }
 

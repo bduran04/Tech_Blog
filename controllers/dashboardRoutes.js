@@ -42,7 +42,7 @@ router.get('/', withAuth, async (req, res) => {
 
         res.render('dashboard', {
             posts,
-            logged_in: req.session.logged_in
+            logged_in: true
         });
     } catch (err) {
         res.status(500).json(err);
@@ -75,17 +75,22 @@ router.get('/edit/:id', withAuth, async (req, res) => {
                   ], 
                   include: {
                       model: User,
-                      attributes: ['email']
+                      attributes: ['email', 'username']
                   }
               }
           ]
         });
     
+        if (!dbPostData) {
+            res.status(404).json({ message: 'No post found with this id' });
+            return;
+          }
+
         const posts = dashboardData.get({ plain: true });
     
         res.render('editPost', {
-          ...posts,
-          logged_in: req.session.logged_in
+          posts,
+          logged_in: true
         });
       } catch (err) {
         res.status(500).json(err);
@@ -118,11 +123,11 @@ router.get('/create/', withAuth, async (req, res) => {
                     include: {
                         model: User,
                         attributes:
-                            ['email']
+                            ['email', 'username']
                     }
                 }, {
                     model: User,
-                    attributes: ['email']
+                    attributes: ['email', 'username']
                 }
             ]
         })
@@ -131,7 +136,7 @@ router.get('/create/', withAuth, async (req, res) => {
 
         res.render('newPost', {
             posts,
-            logged_in: req.session.logged_in
+            logged_in: true
         });
     } catch (err) {
         res.status(500).json(err);
