@@ -13,6 +13,9 @@
 ## [Description](#description)
 This application is a CMS-style blog where developers can publish their blog posts and comment on other developers' posts as well. This app follows he MVC paradigm in its architectural structure, uses Handlebars.js as the templating language, Sequelize as the ORM, and the express-session npm package for authentication. 
 
+Deployed app: https://evening-hamlet-73415.herokuapp.com/
+
+![This is the gif for the app](Assets/tech_blog.gif)
 
 
 ## [Installation](#installation)
