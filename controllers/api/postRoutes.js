@@ -2,27 +2,27 @@ const router = require('express').Router();
 const { User, Post, Comment } = require('../../models');
 const withAuth = require('../../utils/auth');
 
-// router.get('/', async (req, res) => {
-//   try {
-//     const postData = await Post.findAll({
-//       order: [['created_at', 'DESC']],
-//       include: [
-//         {
-//           model: Comment,
-//           include: {
-//             model: User,
-//           }
-//         },
-//         {
-//           model: User
-//         },
-//       ]
-//     });
-//     res.status(200).json(postData);
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// });
+router.get('/', async (req, res) => {
+  try {
+    const postData = await Post.findAll({
+      order: [['created_at', 'DESC']],
+      include: [
+        {
+          model: Comment,
+          include: {
+            model: User,
+          }
+        },
+        {
+          model: User
+        },
+      ]
+    });
+    res.status(200).json(postData);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 router.get('/:id', async (req, res) => {
   try {
