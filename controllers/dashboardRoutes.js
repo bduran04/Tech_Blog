@@ -4,36 +4,18 @@ const { Post, User, Comment } = require('../models');
 const withAuth = require('../utils/auth');
 
 //find all of the data and post on the dashboard
-router.get('/', withAuth, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const dashboardData = await Post.findAll({
             where: {
                 user_id: req.session.user_id
             },
-            attributes: [
-                'id',
-                'title',
-                'created_at',
-                'post_content'
-            ],
             include: [
                 {
                     model: Comment,
-                    attributes: [
-                        'id',
-                        'comment_text',
-                        'post_id',
-                        'user_id',
-                        'created_at'
-                    ],
                     include: {
                         model: User,
-                        attributes:
-                            ['email']
                     }
-                }, {
-                    model: User,
-                    attributes: ['email']
                 }
             ]
         })
@@ -101,33 +83,12 @@ router.get('/edit/:id', withAuth, async (req, res) => {
 router.get('/create/', withAuth, async (req, res) => {
     try {
         const dashboardData = await Post.findAll({
-            where: {
-                user_id: req.session.user_id
-            },
-            attributes: [
-                'id',
-                'title',
-                'created_at',
-                'post_content'
-            ],
             include: [
                 {
                     model: Comment,
-                    attributes: [
-                        'id',
-                        'comment_text',
-                        'post_id',
-                        'user_id',
-                        'created_at'
-                    ],
                     include: {
                         model: User,
-                        attributes:
-                            ['email', 'username']
                     }
-                }, {
-                    model: User,
-                    attributes: ['email', 'username']
                 }
             ]
         })
@@ -136,7 +97,7 @@ router.get('/create/', withAuth, async (req, res) => {
 
         res.render('newPost', {
             posts,
-            logged_in: true
+            logged_in: req.session.logged_in
         });
     } catch (err) {
         res.status(500).json(err);

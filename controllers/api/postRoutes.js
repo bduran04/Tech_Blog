@@ -2,36 +2,27 @@ const router = require('express').Router();
 const { User, Post, Comment } = require('../../models');
 const withAuth = require('../../utils/auth');
 
-router.get('/', async (req, res) => {
-  try {
-    const postData = await Post.findAll({
-      attributes: [
-        'id',
-        'title',
-        'created_at',
-        'post_content'
-      ],
-      order: [['created_at', 'DESC']],
-      include: [
-        {
-          model: Comment,
-          attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-          include: {
-            model: User,
-            attributes: ['email', 'username']
-          }
-        },
-        {
-          model: User,
-          attributes: ['username', 'email']
-        },
-      ]
-    });
-    res.status(200).json(postData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
+// router.get('/', async (req, res) => {
+//   try {
+//     const postData = await Post.findAll({
+//       order: [['created_at', 'DESC']],
+//       include: [
+//         {
+//           model: Comment,
+//           include: {
+//             model: User,
+//           }
+//         },
+//         {
+//           model: User
+//         },
+//       ]
+//     });
+//     res.status(200).json(postData);
+//   } catch (err) {
+//     res.status(500).json(err);
+//   }
+// });
 
 router.get('/:id', async (req, res) => {
   try {
@@ -78,21 +69,18 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', withAuth, async (req, res) => {
-  try {
-    const postData = await Post.create({
-      title: req.body.title,
-      post_content: req.body.post_content,
-      user_id: req.session.user_id
-    });
-
-    if (req.session) {
-      res.status(200).json(postData);
+    try {
+      const newPost = await Post.create({
+        title: req.body.title,
+        post_content: req.body.post_content,
+        user_id: req.session.user_id
+      });
+      console.log("Created!")
+      res.status(200).json(newPost);
+    } catch (err) {
+      res.status(400).json(err);
     }
-
-  } catch (err) {
-    res.status(400).json(err);
-  }
-});
+  });
 
 router.put('/:id', withAuth, async (req, res) => {
   try {
