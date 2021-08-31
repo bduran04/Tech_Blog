@@ -3,8 +3,8 @@
   ## Table of Contents
 
 1. [Description](#description)
-2. [Installation](#installation)
-3. [Usage](#usage)
+2. [Technologies Used](#technologies)
+3. [Installation](#installation)
 4. [License](#license)
 5. [Contributing](#contributing)
 6. [Tests](#tests)
@@ -17,12 +17,16 @@ Deployed app: https://evening-hamlet-73415.herokuapp.com/
 
 ![This is the gif for the app](Assets/tech_blog.gif)
 
+## [Technologies Used](#technologies)
+* MySQL
+* Express.js
+* dotenv
+* Handlebars.js
+* bcrypt
+* bulma
 
 ## [Installation](#installation)
 To install necessary dependencies, run the following command: npm install, npm start
-
-## [Usage](#usage)
-Check out my other work
 
 ## [License](#license)![This is the badge image](https://img.shields.io/badge/license-MIT-blue.svg)
 This project is licensed under: 
